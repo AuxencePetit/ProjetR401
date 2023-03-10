@@ -5,7 +5,7 @@
     $server = "localhost";
     $login = "root";
     $mdp = "";
-    $db = "tpr401";
+    $db = "projetr401";
     ///Connexion au serveur MySQL
     try {
         $linkpdo = new PDO("mysql:host=$server;dbname=$db",$login, $mdp);
@@ -27,11 +27,11 @@
             /// Récupération des critères de recherche envoyés par le Client
             if(is_jwt_valid($bearer_token)){
                if (isset($_GET['id'])){
-                    $req = $linkpdo->prepare("SELECT * FROM `chuckn_facts` WHERE id = ?;");
+                    $req = $linkpdo->prepare("SELECT * FROM `article` WHERE id_article = ?;");
                     $req->execute(array($_GET['id']));
                     $matchingData = $req->fetchAll();
                 }else{
-                    $req = $linkpdo->prepare("SELECT * FROM `chuckn_facts`");
+                    $req = $linkpdo->prepare("SELECT * FROM `article`");
                     $req->execute();
                     $matchingData = $req->fetchAll();
                 }
@@ -44,10 +44,11 @@
             /// Récupération des données envoyées par le Client
             $postedData = file_get_contents('php://input');
             $data = json_decode($postedData);
-            $phrase = $data->phrase;
+            $contenue = $data->contenue;
+            $auteur = $data->auteur;
             if (!empty($data->phrase)){
-                $req = $linkpdo->prepare("INSERT INTO chuckn_facts (phrase) VALUES (:phrase)");
-                $req->execute(array('phrase' => $phrase));
+                $req = $linkpdo->prepare("INSERT INTO article (contenue, id_utilisateur) VALUES (:contenue, :auteur)");
+                $req->execute(array('contenue' => $contenue, 'auteur'=>$auteur));
             }
             /// Traitement
             /// Envoi de la réponse au Client
@@ -60,8 +61,8 @@
             $postedData = file_get_contents('php://input');
             $postedData = json_decode($postedData);
             if (!empty($postedData->phrase)){
-                $req = $linkpdo->prepare("UPDATE `chuckn_facts` SET `phrase` = :phrase WHERE `chuckn_facts`.`id` = :id;");
-                $req->execute(array('phrase' => $postedData->phrase,
+                $req = $linkpdo->prepare("UPDATE `article` SET `contenue` = :phrase WHERE `article`.`id_article` = :id;");
+                $req->execute(array('contenue' => $postedData->phrase,
                                     'id' => $postedData->id));
             }
             deliver_response(201, "Votre message", NULL);
@@ -72,7 +73,7 @@
         case "DELETE" :
             /// Récupération des données envoyées par le Client
             if (isset($_GET['id'])){
-                $req = $linkpdo->prepare("DELETE FROM chuckn_facts WHERE `chuckn_facts`.`id` = ?");
+                $req = $linkpdo->prepare("DELETE FROM article WHERE `article`.`id_article` = ?");
                 $req->execute(array($_GET['id']));
             }
             /// Traitement
