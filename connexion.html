@@ -1,0 +1,25 @@
+<html lang="en" id="index">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='css/style.css' rel='stylesheet' type='text/css'>
+    <link rel="icon" type="image/x-icon" href="img/LOGOCHATYME.png">
+    <title>ChatWithMe-Connexion</title>
+</head>
+    <body id="page-con">
+        <img src="img/LOGOCHATYME.svg" alt="">
+        <div id="loginContainer">
+            <form action="connexion.php" method="POST">
+                <h1>Connexion</h1>
+                <div><label>Nom d'utilisateur</label></div>
+                <input type="text" placeholder="Identifiant" name="username" required>
+                <br/>
+                <div><label>Mot de passe</label></div>
+                <input type="password" placeholder="..." name="password" required>
+                <br/>
+                <input type="submit" id='submit' value='Se connecter'>
+            </form>
+        </div>
+    </body>
+</html>

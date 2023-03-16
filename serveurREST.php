@@ -38,6 +38,8 @@
                 /// Envoi de la réponse au Client
                 deliver_response(200, "Votre message", $matchingData);
                 break; 
+            }else{
+                echo "token invalide";
             }
         /// Cas de la méthode POST
         case "POST" :
