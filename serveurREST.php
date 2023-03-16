@@ -82,6 +82,53 @@
             /// Envoi de la réponse au Client
             deliver_response(200, "Votre message", NULL);
             break;
+        /// Cas de la méthode LIKE
+        case "LIKE" :
+            /// Récupération des données envoyées par le Client
+            $postedData = file_get_contents('php://input');
+            $data = json_decode($postedData);
+            $idUtilisateur = $data->idUtilisateur;
+            $idArticle = $data->idArticle;
+            if (!empty($data->idUtilisateur)){
+                if(!empty($data->idArticle)){
+                    ///verification de vote deja existant
+                    $req = $linkpdo->prepare("SELECT * FROM `reagir` WHERE id_article = :id_article AND id_utilisateur = :id_utilisateur;");
+                    $req->execute(array('id_article'=> $idArticle, 'id_utilisateur'=> $idUtilisateur));
+                    if($req = NULL){
+                        $req = $linkpdo->prepare("INSERT INTO reagir(id_utilisateur, id_article, liker, disliker) VALUES (:id_utilisateur, :id_article, :liker, :disliker)");
+                        $req->execute(array('id_utilisateur' => $idUtilisateur, 'id_article' => $idArticle, 'liker'=>1, 'disliker'=>0));
+                    }else{
+                        $req = $linkpdo->prepare("UPDATE `reagir` SET `liker` = :likefalse , 'disliker'= :disliketrue WHERE `reagir`.`id_article` = :id_article AND 'reagir'.'id_utilisateur'= :id_utilisateur;");
+                        $req->execute(array('id_article'=> $idArticle, 'id_utilisateur'=>$idUtilisateur,'likefalse'=>1, 'disliketrue'=>0));
+                    }
+                }   
+            }
+            /// Envoi de la réponse au Client
+            deliver_response(200, "Votre message", NULL);
+            break;
+        case "DISLIKE" :
+            /// Récupération des données envoyées par le Client
+            $postedData = file_get_contents('php://input');
+            $data = json_decode($postedData);
+            $idUtilisateur = $data->idUtilisateur;
+            $idArticle = $data->idArticle;
+            if(!empty($data->idUtilisateur)){
+                if(!empty($data->idArticle)){
+                    ///verification de vote deja existant
+                    $req = $linkpdo->prepare("SELECT * FROM `reagir` WHERE id_article = :id_article AND id_utilisateur = :id_utilisateur;");
+                    $req->execute(array('id_article'=> $idArticle, 'id_utilisateur'=> $idUtilisateur));
+                    if($req = NULL){
+                        $req = $linkpdo->prepare("INSERT INTO reagir(id_utilisateur, id_article, liker, disliker) VALUES (:id_utilisateur, :id_article, :liker, :disliker)");
+                        $req->execute(array('id_utilisateur' => $idUtilisateur, 'id_article' => $idArticle, 'liker'=>0, 'disliker'=>1));
+                    }else{
+                        $req = $linkpdo->prepare("UPDATE `reagir` SET `liker` = :likefalse , 'disliker'= :disliketrue WHERE `reagir`.`id_article` = :id_article AND 'reagir'.'id_utilisateur'= :id_utilisateur;");
+                        $req->execute(array('id_article'=> $idArticle, 'id_utilisateur'=>$idUtilisateur,'likefalse'=>0, 'disliketrue'=>1));
+                    }   
+                }
+            }
+            ///Envoi de la réponse au Client
+            deliver_response(200,"message", NULL);
+            break;
         //cas d'erreur
         default :
             /// Récupération de l'identifiant de la ressource envoyé par le Client
