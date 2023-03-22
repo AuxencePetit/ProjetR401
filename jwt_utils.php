@@ -60,7 +60,6 @@ function get_authorization_header(){
 			$headers = trim($requestHeaders['Authorization']);
 		}
 	}
-
 	return $headers;
 }
 
@@ -75,5 +74,9 @@ function get_bearer_token() {
     }
     return null;
 }
-
+function getPayload($bearer_token){
+	$tokenParts = explode('.', $bearer_token);
+	$payload = base64_decode($tokenParts[1]);
+	return json_decode($payload);
+}
 ?>

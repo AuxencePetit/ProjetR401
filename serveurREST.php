@@ -21,6 +21,8 @@
     $http_method = $_SERVER['REQUEST_METHOD'];
     include("jwt_utils.php");
     $bearer_token = get_bearer_token();
+    $payload = getPayload($bearer_token);
+    var_dump($payload);
     switch ($http_method){
         /// Cas de la méthode GET
         case "GET" :
