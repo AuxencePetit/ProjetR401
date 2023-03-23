@@ -93,7 +93,12 @@
                     }
                     /// Traitement
                     /// Envoi de la réponse au Client
-                    deliver_response(200, "Suppression réalisé avec succes", NULL);
+                    if($req->rowCount() == 1){
+                        deliver_response(200, "Suppression réalisé avec succes", NULL);
+                    }else{
+                        deliver_response(404, "Not Found", NULL);
+                    }
+                    
                     break;
                 }
                 else if( $payload->role ==="publisher"){
@@ -102,9 +107,11 @@
                         $req = $linkpdo->prepare("DELETE FROM article WHERE `article`.`id_article` = ? AND article.Id_utilisateur = ?");
                         $req->execute(array($_GET['id'],$payload->id));
                     }
-                    /// Traitement
-                    /// Envoi de la réponse au Client
-                    deliver_response(200, "Votre message", NULL);
+                    if($req->rowCount() == 1){
+                        deliver_response(200, "Suppression réalisé avec succes", NULL);
+                    }else{
+                        deliver_response(404, "Not Found", NULL);
+                    }
                     break;
                 }
             }else{
