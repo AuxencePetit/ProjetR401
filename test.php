@@ -13,6 +13,6 @@
         }
         $pwd=password_hash("1234",PASSWORD_DEFAULT);
         echo $pwd;
-        $res = $bdd->prepare("UPDATE utilisateur SET `mdp` = :mdp WHERE id_utilisateur = 1;");
+        $res = $bdd->prepare("UPDATE utilisateur SET `mdp` = :mdp WHERE id_utilisateur = 3;");
         $res->execute(array("mdp"=>$pwd));
 ?>

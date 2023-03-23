@@ -22,7 +22,6 @@
     include("jwt_utils.php");
     $bearer_token = get_bearer_token();
     $payload = getPayload($bearer_token);
-    var_dump($payload);
     switch ($http_method){
         /// Cas de la méthode GET
         case "GET" :
@@ -39,7 +38,7 @@
                     $matchingData = $req->fetchAll();
                 }
                 /// Envoi de la réponse au Client
-                deliver_response(200, "Votre message", $matchingData);
+                deliver_response(200, "Publication chargé avec succés", $matchingData);
                 break; 
             }else{
                 echo "token invalide";
@@ -86,15 +85,28 @@
         case "DELETE" :
             ///verification de la validité du token
             if(is_jwt_valid($bearer_token)){
-                /// Récupération des données envoyées par le Client
-                if (isset($_GET['id'])){
-                    $req = $linkpdo->prepare("DELETE FROM article WHERE `article`.`id_article` = ?");
-                    $req->execute(array($_GET['id']));
+                if( $payload->role === "moderateur" ){
+                    /// Récupération des données envoyées par le Client
+                    if (isset($_GET['id'])){
+                        $req = $linkpdo->prepare("DELETE FROM article WHERE `article`.`id_article` = ?");
+                        $req->execute(array($_GET['id']));
+                    }
+                    /// Traitement
+                    /// Envoi de la réponse au Client
+                    deliver_response(200, "Suppression réalisé avec succes", NULL);
+                    break;
                 }
-                /// Traitement
-                /// Envoi de la réponse au Client
-                deliver_response(200, "Votre message", NULL);
-                break;
+                else if( $payload->role ==="publisher"){
+                    /// Récupération des données envoyées par le Client
+                    if (isset($_GET['id'])){
+                        $req = $linkpdo->prepare("DELETE FROM article WHERE `article`.`id_article` = ? AND article.Id_utilisateur = ?");
+                        $req->execute(array($_GET['id'],$payload->id));
+                    }
+                    /// Traitement
+                    /// Envoi de la réponse au Client
+                    deliver_response(200, "Votre message", NULL);
+                    break;
+                }
             }else{
                 echo "token invalide";
             }
