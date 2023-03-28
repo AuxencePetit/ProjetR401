@@ -37,7 +37,7 @@
         $list = array();
         if($type === "liker" || $type ==="disliker"){
             $req = $linkpdo->prepare("SELECT utilisateur.login FROM reagir,utilisateur WHERE reagir.".$type." = 1 AND utilisateur.Id_utilisateur = reagir.Id_utilisateur AND reagir.Id_article = ?;");
-            $req->execute(array(3));
+            $req->execute(array($id));
             $matchingData = $req->fetchAll();
             foreach($matchingData as $user){
                 array_push($list,$user[0]);
@@ -98,6 +98,30 @@
                 /// Récupération des critères de recherche envoyés par le Client 
                if (isset($_GET['id'])){
                     $matchingData = rechercheArticle($_GET['id']);
+                }elseif(isset($_GET['MyMessage'])){
+                    if($_GET['MyMessage'] == 1){
+                        if($payload->role ==="publisher"){
+                            $req = $linkpdo->prepare("SELECT * FROM `article` WHERE Id_utilisateur = ?");
+                            $req->execute(array($payload->user_id));
+                            $matchingData = $req->fetchAll(PDO::FETCH_ASSOC);
+                            $allMessages = array();
+                            foreach($matchingData as $article){
+                                $a = array();
+                                if(is_jwt_valid($bearer_token)){
+                                        $a["nbLike"] = getNbReaction("liker",$article["Id_article"]);
+                                        $a["nbDislike"] = getNbReaction("disliker",$article["Id_article"]);
+                                    }
+                                $a["idArticle"] = $article["Id_article"];
+                                $a["text"] = $article["contenue"];
+                                $a["date"] = $article["dateDePublication"];
+                                $a["IdUser"] = $article["Id_utilisateur"];
+                                array_push($allMessages,$a);
+                            }
+                            $matchingData = $allMessages;
+                        }else {
+                            deliver_response(401,"Unauthorized",NULL);
+                        }
+                    }
                 }else{
                     $matchingData = rechercheArticle(null);
                 }
@@ -125,8 +149,8 @@
                                         $idArticle = $data->idArticle;
                                          ///verification de vote deja existant
                                         if(asReacted($idArticle) == false){
-                                            $req = $linkpdo->prepare("INSERT INTO reagir(id_utilisateur, id_article, liker, disliker) VALUES (:id_utilisateur, :id_article, 1, null)");
-                                            $rs=$req->execute(array('id_utilisateur' => $idUtilisateur, 'id_article' => $idArticle));
+                                            $req = $linkpdo->prepare("INSERT INTO reagir(id_utilisateur, id_article, liker, disliker) VALUES (?, ?, 1, null)");
+                                            $rs=$req->execute(array($idUtilisateur,$idArticle));
                                         }else{
                                             $req = $linkpdo->prepare("UPDATE `reagir` SET `liker` = 1 , disliker= null WHERE `reagir`.`id_article` = :id_article AND reagir.id_utilisateur= :id_utilisateur;");
                                             $rs=$req->execute(array('id_article'=> $idArticle, 'id_utilisateur'=>$idUtilisateur));
