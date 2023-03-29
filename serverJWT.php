@@ -1,19 +1,9 @@
 <?php
-    $server = "localhost";
-    $login = "root";
-    $mdp = "";
-    $db = "projetr401";
     $data = (array) json_decode(file_get_contents('php://input'), TRUE);
     ///Connexion au serveur MySQL
-    if($http_method == "POST"){
-        try {
-            $bdd = new PDO("mysql:host=$server;dbname=$db",$login, $mdp);
-            }
-        ///Capture des erreurs éventuelles
-        catch (Exception $e) {
-            die('Erreur : ' . $e->getMessage());
-        }
-        $res = $bdd->prepare("Select Id_utilisateur,login,role ,mdp FROM utilisateur WHERE login = :login");
+    if($_SERVER['REQUEST_METHOD'] == "POST"){
+        require("config.php");
+        $res = $linkpdo->prepare("Select Id_utilisateur,login,role ,mdp FROM utilisateur WHERE login = :login");
         $res->execute(array("login"=>$data['username']));
             foreach($res as $row){
                 $id= $row['Id_utilisateur'];

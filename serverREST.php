@@ -1,28 +1,15 @@
 <?php
-
-    /// Librairies éventuelles (pour la connexion à la BDD, etc.)
-    /// include('mylib.php');
-    $server = "localhost";
-    $login = "root";
-    $mdp = "";
-    $db = "projetr401";
-    ///Connexion au serveur MySQL
-    try {
-        $linkpdo = new PDO("mysql:host=$server;dbname=$db",$login, $mdp);
-        }
-    ///Capture des erreurs éventuelles
-    catch (Exception $e) {
-        die('Erreur : ' . $e->getMessage());
-        }
+    include("config.php");
     /// Paramétrage de l'entête HTTP (pour la réponse au Client)
     header("Content-Type:application/json");
     $http_method = $_SERVER['REQUEST_METHOD'];
     include("jwt_utils.php");
+    
     $bearer_token = get_bearer_token();
     $payload = getPayload($bearer_token);
 
     function getNbReaction($type,$id){
-        include("dbConnect.php");
+        include("config.php");
         if($type === "liker" || $type ==="disliker"){
             $req = $linkpdo->prepare("SELECT count(reagir.".$type.") as num FROM reagir WHERE reagir.".$type." = 1 AND reagir.Id_article = ?;");
             $req->execute(array($id));
@@ -33,7 +20,7 @@
        
     }
     function getListReact($type,$id){
-        include("dbConnect.php");
+        include("config.php");
         $list = array();
         if($type === "liker" || $type ==="disliker"){
             $req = $linkpdo->prepare("SELECT utilisateur.login FROM reagir,utilisateur WHERE reagir.".$type." = 1 AND utilisateur.Id_utilisateur = reagir.Id_utilisateur AND reagir.Id_article = ?;");
@@ -49,7 +36,7 @@
     function rechercheArticle($id){
         $bearer_token = get_bearer_token();
         $payload = getPayload($bearer_token);
-        include("dbConnect.php");
+        include("config.php");
         if($id == null){ // $qui est vide, on retourne faux
             $req = $linkpdo->prepare("SELECT * FROM `article`");
             $req->execute();
@@ -81,7 +68,7 @@
     function asReacted($idArticle){
         $bearer_token = get_bearer_token();
         $payload = getPayload($bearer_token);
-        include("dbConnect.php");
+        include("config.php");
         $req = $linkpdo->prepare("SELECT * FROM `reagir` WHERE id_article = :id_article AND id_utilisateur = :id_utilisateur");
         $req->execute(array('id_article'=> $idArticle, 'id_utilisateur'=>$payload->user_id));
         $data = $req->fetchAll();
@@ -99,7 +86,6 @@
                if (isset($_GET['id'])){
                     $matchingData = rechercheArticle($_GET['id']);
                 }elseif(isset($_GET['MyMessage'])){
-                    if($_GET['MyMessage'] == 1){
                         if($payload->role ==="publisher"){
                             $req = $linkpdo->prepare("SELECT * FROM `article` WHERE Id_utilisateur = ?");
                             $req->execute(array($payload->user_id));
@@ -121,7 +107,6 @@
                         }else {
                             deliver_response(401,"Unauthorized",NULL);
                         }
-                    }
                 }else{
                     $matchingData = rechercheArticle(null);
                 }
@@ -196,7 +181,7 @@
                                     if($rs == null){
                                         deliver_response(424, "	Method failure", NULL);
                                     }else{
-                                            deliver_response(200, "dislike ajouté avec succes",NULL);
+                                            deliver_response(200, "ajout message avec succes",NULL);
                                     }
                                     break;
                     } 
