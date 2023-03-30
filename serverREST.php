@@ -105,14 +105,14 @@
                             }
                             $matchingData = $allMessages;
                         }else {
-                            deliver_response(401,"Unauthorized",NULL);
+                            deliver_response(401,"Il vous faut le rôle 'publisher' pour réaliser cette action.",NULL);
                         }
                 }else{
                     $matchingData = rechercheArticle(null);
                 }
                 /// Envoi de la réponse au Client
                 if($matchingData == null){
-                    deliver_response(404, "Not Found", NULL);
+                    deliver_response(404, "Aucun message trouvé", NULL);
                 }else{
                     deliver_response(200, "Chargement des messages réalisé avec succes", $matchingData);
                 }
@@ -141,7 +141,7 @@
                                             $rs=$req->execute(array('id_article'=> $idArticle, 'id_utilisateur'=>$idUtilisateur));
                                         }
                                         if($rs == null){
-                                            deliver_response(404, "Not Found", NULL);
+                                            deliver_response(424, "aucun ajout réalisé", NULL);
                                         }else{
                                                 deliver_response(200, "like ajouté avec succes",NULL);
                                         }
@@ -163,7 +163,7 @@
                                             $rs=$req->execute(array('id_article'=> $idArticle, 'id_utilisateur'=>$idUtilisateur));
                                         }
                                         if($rs == null){
-                                                deliver_response(404, "Not Found", NULL);
+                                                deliver_response(424, "aucun ajout réalisé", NULL);
                                         }else{
                                                 deliver_response(200, "dislike ajouté avec succes",NULL);
                                         }
@@ -179,18 +179,18 @@
                                     }
                                     /// Envoi de la réponse au Client
                                     if($rs == null){
-                                        deliver_response(424, "	Method failure", NULL);
+                                        deliver_response(424, "aucun ajout réalisé", NULL);
                                     }else{
                                             deliver_response(200, "ajout message avec succes",NULL);
                                     }
                                     break;
                     } 
                 }else{
-                    deliver_response(401,"Unauthorized",NULL);
+                    deliver_response(401,"Il vous faut le rôle 'publisher' pour réaliser cette action.",NULL);
                     break;
                 }                 
             }else{
-                deliver_response(401,"Unauthorized",NULL);
+                deliver_response(401,"Il vous faut le rôle 'publisher' pour réaliser cette action.",NULL);
             }
             break;   
         /// Cas de la méthode PUT
@@ -208,7 +208,7 @@
                 }
                 /// Envoi de la réponse au Client
                 if($rs == null){
-                    deliver_response(404, "Not Found", NULL);
+                    deliver_response(404, "Aucun article trouvée pour cet identifant", NULL);
                 }else{
                     deliver_response(201, "Modified", NULL);
                 }
@@ -242,9 +242,9 @@
                         $req->execute(array($_GET['id'],$payload->id));
                     }
                     if($req == null){
-                        deliver_response(200, "Suppression réalisé avec succes", NULL);
-                    }else{
                         deliver_response(404, "Not Found", NULL);
+                    }else{
+                        deliver_response(200, "Suppression réalisé avec succes", NULL);
                     }
                     break;
                 }
