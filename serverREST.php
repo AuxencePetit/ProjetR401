@@ -214,7 +214,7 @@
                 }
                 break;
             }else{
-                deliver_response(401,"Unauthorized",NULL);
+                deliver_response(401,"Un token valide est nécessaire pour toute modification ",NULL);
             }
             break;
         /// Cas de la méthode DELETE
@@ -233,7 +233,6 @@
                     }else{
                         deliver_response(200, "Suppression réalisé avec succes", NULL);
                     }
-                    
                     break;
                 }
                 else if( $payload->role ==="publisher"){
@@ -249,7 +248,7 @@
                     break;
                 }
             }else{
-                deliver_response(401,"Unauthorized",NULL);
+                deliver_response(401,"Un token valide est nécéssaire pour delete",NULL);
             }
             break;
         //cas d'erreur
