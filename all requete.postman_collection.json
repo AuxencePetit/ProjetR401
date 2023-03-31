@@ -1,0 +1,105 @@
+{
+	"info": {
+		"_postman_id": "935380c8-ef98-46c9-804a-d62a7ec17e58",
+		"name": "all requete",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "get avec user token invalide",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMyIsInJvbGUiOiJwdWJsaXNoZXIiLCJleHAiOjE2ODAwOTA4Mjd9.zjXxY4MC5rrZv_-lHRGH0uBm6DNl2NDZplvwQWnne9E",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"contenu\":\"TEST INSERT\",\"action\":\"poster\"}"
+				},
+				"url": {
+					"raw": "http://localhost/ProjetR401/serverREST.php",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"ProjetR401",
+						"serverREST.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post message pour user 'publisher'",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMyIsInJvbGUiOiJwdWJsaXNoZXIiLCJleHAiOjE2ODAyNjQ2ODF9.0tRCyC5tmSWROqM6lunglgS62qlfAv-WeA9mCLZs9Rw",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"contenu\":\"voici un message injurieux\",\"action\":\"poster\"}"
+				},
+				"url": {
+					"raw": "http://localhost/ProjetR401/serverREST.php",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"ProjetR401",
+						"serverREST.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete message user moderateur",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMSIsInJvbGUiOiJtb2RlcmF0ZXVyIiwiZXhwIjoxNjgwMjY1NTMwfQ.Kvcv9JzdyD1_yJCDM4jNs1dmA642zA6djMKlJ7kE0uE",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\":\"moderateur\",\"password\": \"1234\" }"
+				},
+				"url": {
+					"raw": "http://localhost/ProjetR401/serverREST.php?id=7",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"ProjetR401",
+						"serverREST.php"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "7"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

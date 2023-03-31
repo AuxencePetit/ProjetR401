@@ -1,4 +1,5 @@
 <?php
+    include("jwt_utils.php");
     $data = (array) json_decode(file_get_contents('php://input'), TRUE);
     ///Connexion au serveur MySQL
     if($_SERVER['REQUEST_METHOD'] == "POST"){
@@ -12,7 +13,7 @@
                 $role = $row['role'];
             }
         if($data['username'] == $loginFromBDD AND password_verify($data["password"], $passwordHashedFromBDD)) {
-            include("jwt_utils.php");
+            
             $header = array("alg"=>"HS256","typ"=>"JWT");
             $payload = array("user_id"=>$id , "role"=>$role , 'exp'=>(time()+7000));
             $tokenJWT = generate_jwt($header,$payload);
@@ -21,7 +22,7 @@
             deliver_response(404,"NOT FOUND",NULL);
         } 
     }else{
-        deliver_response(404,"NOT FOUND",NULL);
+        deliver_response(501,"Not Implemented",NULL);
     }
     
 ?>
